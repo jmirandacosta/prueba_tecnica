@@ -1,5 +1,6 @@
 package com.springboot.prueba.models.services;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -19,11 +20,21 @@ public class FacturaServiceImpl implements FacturaService {
 	private IProductoDao productoDao;
 
 	@Override
-	public Factura findAll(String cliente) {
+	public Factura findAll(String cliente, String cantidad) {
+		
 		List<Producto> productos = (List<Producto>) productoDao.findAll();
+		int limite = Integer.parseInt(cantidad.trim());
+		List<Producto> productosMax = new ArrayList<Producto>();
+		
+		int index=0;
+		while(productosMax.size()<limite) {
+			productosMax.add(productos.get(index));
+			index++;
+		}
+		
 		Factura fact = new Factura();
 		fact.setCliente(cliente);
-		fact.setItems(productos.stream().map(p -> new Item(p, Utilidad.Cantidad())).collect(Collectors.toList()));
+		fact.setItems(productosMax.stream().map(p -> new Item(p, Utilidad.Cantidad())).collect(Collectors.toList()));
 		return fact;
 	}
 
